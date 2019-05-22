@@ -62,6 +62,10 @@ LIBS='-mkl=sequential'
 EOF
 fi
 
+if [ $MAALI_TOOL_MAJOR_VERSION \< 2 ]; then
+cp make.inc make.sys
+fi
+
 }
 
 function maali_build {
@@ -72,13 +76,17 @@ fi
   cd "$MAALI_TOOL_BUILD_DIR"
   maali_run "make -j $MAALI_CORES"
   maali_run "make -j $MAALI_CORES lib"
+if [ ! $MAALI_TOOL_MAJOR_VERSION \< 2 ]; then
   maali_run "make -j $MAALI_CORES dynlib"
+fi
   maali_run "mkdir -p $MAALI_INSTALL_DIR/bin"
   maali_run "mkdir -p $MAALI_INSTALL_DIR/lib"
+if [ ! $MAALI_TOOL_MAJOR_VERSION \< 2 ]; then
   maali_run "install -m 750 postw90.x $MAALI_INSTALL_DIR/bin/postw90.x"
+  maali_run "install -m 750 libwannier.so $MAALI_INSTALL_DIR/lib/libwannier.so"
+fi
   maali_run "install -m 750 wannier90.x $MAALI_INSTALL_DIR/bin/wannier90.x"
   maali_run "install -m 640 libwannier.a $MAALI_INSTALL_DIR/lib/libwannier.a"
-  maali_run "install -m 750 libwannier.so $MAALI_INSTALL_DIR/lib/libwannier.so"
 
 }
 ##############################################################################
